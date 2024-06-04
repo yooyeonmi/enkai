@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+.participant-count{
+	background-color: rgb(170, 215, 255);
+	height: 50px;
+	font-size: x-large;
+	color: rgb(128, 128, 192);
+	font-weight: bold;
+	text-align: center;
+	
+}
+
+.login-b{
+	display: flex;
+	justify-content: center;
+	margin-top: 10px;
+	height: 40px;;
+}
+
+.entry{
+	display: flex;
+	justify-content: center;
+}
