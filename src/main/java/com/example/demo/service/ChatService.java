@@ -7,12 +7,17 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.common.DataNotFoundException;
 import com.example.demo.dao.BaseDao;
+import com.example.demo.dao.ChatDao;
 import com.example.demo.entity.Chat;
+
 
 @Service
 public class ChatService implements BaseService<Chat> {
 	@Autowired
 	private BaseDao<Chat> dao;
+	@Autowired
+	private ChatDao chatDao;
+
 
 	@Override
 	public List<Chat> findAll() {
@@ -32,5 +37,14 @@ public class ChatService implements BaseService<Chat> {
 	@Override
 	public void deleteById(Integer id) {
 		dao.deleteById(id);
+	}
+	
+	public Chat findByEventIdAndUserId(Integer eventId, Integer userId)  {
+		try {
+			return chatDao.findByEventIdAndUserId(eventId, userId);
+		} catch (DataNotFoundException e) {
+			return null;	
+		}
+
 	}
 }

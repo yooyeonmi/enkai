@@ -6,6 +6,7 @@
   </head>
   <body>
     <div layout:fragment="content">
+	<form th:action ="@{/admin/events/view/{id}(id=*{id})}" th:object="${event}" method="post">
       <h1>イベント詳細</h1>
       <table class="table table-striped mt-4">
         <thead class="bg-primary text-white">
@@ -16,52 +17,53 @@
 			<th>カテゴリ</th>
 			<th>管理ユーザ</th>
             <th>作成日時</th>
-            <th>更新日時</th>
           </tr>
         </thead>																																																																																					
         <tbody>
-          <tr th:each="event: ${events}" th:object="${event}">
+			<tr>
             <td th:text="*{id}"></td>
             <td th:text="*{name}"></td>
 			<td th:text="*{maxParticipant}"></td>
 			<td th:text="*{category.name}"></td>
 			<td th:text="*{user.email}"></td>
             <td th:text="*{#dates.format(createdAt, 'yyyy年MM月dd日HH時mm分ss秒')}"></td>
-            <td th:text="*{#dates.format(modifiedAt, 'yyyy年MM月dd日HH時mm分ss秒')}"></td>
- 
-            </td>
           </tr>
         </tbody>
   	</table>
-	<div class = "participant-count">
-		現在参加者数: <span th:text= "*{id} "+'名'""></span>
-	</div>
+		<div class = "participant-count">
+			現在参加者数: <span th:text= "${event.eventUsers.size()} +'名' "></span>
+		</div>
 	  
 	   <h1>イベント参加者</h1>
   	      <table class="table table-striped mt-4">
   	        <thead class="bg-primary text-white">
   	          <tr>
-				<th>ユーザid</th>
+				<th>ユーザID</th>
 	            <th>ユーザ名</th>
 	            <th>作成日時</th>
-	            <th>更新日時</th>
   	          </tr>
   	        </thead>
   	        <tbody>
-			  <tr th:each="eventUser: ${eventUsers}" th:object="${eventUser}">
+			  <tr th:each="eventUser: ${event.eventUsers}" th:object="${eventUser}">
 				<td th:text="*{id}"></td>
-	            <td th:text="*{email}"></td>
+	            <td th:text="*{user.email}"></td>
 	            <td th:text="*{#dates.format(createdAt, 'yyyy年MM月dd日HH時mm分ss秒')}"></td>
-	            <td th:text="*{#dates.format(modifiedAt, 'yyyy年MM月dd日HH時mm分ss秒')}"></td>
-	            <td class="actions text-nowrap">
-  	  			</td>
   	  		</tr>
   	  	</tbody>
   	  </table>
-	 <div class="entry">
-		<a th:href="@{/admin/chat/talk/{id}(id=*{id})}"  class="btn btn-primary">参加する</a>
-	 </div>
-		  
+	
+		<div th:if ="${eventUser == null}" class="navbar-nav mr-auto">
+		 <div class="entry"> 	   <!--//login ユーザを送って-->
+			<a th:href="@{/admin/eventusers/create/{id}(id=*{id})}" class="btn btn-primary">参加する</a>
+		 </div>
+		</div>
+	 	<div th:if ="${eventUser != null}" class="navbar-nav mr-auto">
+		 <div class="entry">
+			<a th:href="@{/admin/chats/talk/{id}(id=*{id})}" class="btn btn-primary">チャットに参加する</a>
+			<a th:href="@{/admin/eventusers/delete/{id}(id=*{id})}" class="btn btn-primary">辞退する</a>
+		 </div>
+	  </div>
+	</form> 
     </div>
   </body>
 </html>	

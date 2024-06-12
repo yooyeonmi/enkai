@@ -37,7 +37,20 @@ public class EventUserService implements BaseService<EventUser> {
 		dao.deleteById(id);
 	}
 	
-	/*		public List<EventUser> findByEventId(Integer eventId) throws DataNotFoundException {
-		return eventUserDao.findByEventId(eventId); //
-	}*/
+	public List<EventUser> findByEventId(Integer eventId) throws DataNotFoundException {
+		return eventUserDao.findByEventId(eventId); 
+	}
+	
+	public List<EventUser> findByUserId(Integer userId) throws DataNotFoundException {
+		return eventUserDao.findByUserId(userId); 
+	}
+	
+	public EventUser findByEventIdAndUserId(Integer eventId, Integer userId)  {
+		try {
+			return eventUserDao.findByEventIdAndUserId(eventId, userId);
+		} catch (DataNotFoundException e) {
+			return null;	
+		}
+
+	}
 }

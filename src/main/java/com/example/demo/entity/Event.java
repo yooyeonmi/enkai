@@ -61,12 +61,6 @@ public class Event extends AbstractEntity {
 	
 	@OneToMany(mappedBy = "event",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private List<EventUser> eventUsers; //
-	
-	//getters and setters
-	/*	
-		public int getEventUserCount() {
-			return eventUser.size();
-		}
-	*/
+
 
 }

@@ -16,6 +16,8 @@ public class EventService implements BaseService<Event> {
 	private BaseDao<Event> dao;
 	@Autowired
 	private EventDao eventDao;
+
+	
 	/*	@Autowired
 		private EventDao eventUserDao;*/
 
@@ -28,7 +30,7 @@ public class EventService implements BaseService<Event> {
 	public Event findById(Integer id) throws DataNotFoundException {
 		return dao.findById(id);
 	}
-
+	
 	@Override
 	public void save(Event event) {
 		dao.save(event);
@@ -39,17 +41,26 @@ public class EventService implements BaseService<Event> {
 		dao.deleteById(id);
 	}	
 	
+	/*	public Event findByMax(Integer maxParticipant) throws DataNotFoundException {
+			return dao.findByMax(maxParticipant);
+		}*/
+	
 	public List<Event> findByCategoryId(Integer categoryId) throws DataNotFoundException {
 		return eventDao.findByCategoryId(categoryId); //
 	}
-	/*	
-		public List<Event> findByEventId(Integer eventId) throws DataNotFoundException {
-			return eventDao.findByEventId(eventId); //
-		}*/
-/*	
-		public List<Event> findByEventUserId(Integer eventUserId) throws DataNotFoundException {
-			return eventDao.findByEventUserId(eventUserId); //
-		}
-	*/
+	
+	public List<Event> findByUserId(Integer userId) throws DataNotFoundException {
+		return eventDao.findByUserId(userId); //
+	}
+
+	/*		public Event findByUsId(Integer userId)  {
+				try {
+					return eventDao.findByUsId(userId);
+				} catch (DataNotFoundException e) {
+					return null;	
+				}
+			}*/
+
+	
 	
 }

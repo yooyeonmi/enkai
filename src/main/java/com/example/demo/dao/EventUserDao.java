@@ -40,11 +40,29 @@ public class EventUserDao implements BaseDao<EventUser> {
 		}
 	}
 	
-	/*		public List<EventUser> findByEventId(Integer eventId) throws DataNotFoundException{
-				List<EventUser> eventusers  = this.repository.findByEventId(eventId);
-				if (eventusers == null) {
+	public List<EventUser> findByEventId(Integer eventId) throws DataNotFoundException{
+				List<EventUser> eventuser  = this.repository.findByEventId(eventId);
+				if (eventuser == null) {
 					throw new DataNotFoundException();
 				}
-				return eventusers;
-			}*/
+				return eventuser; //eventUsers -> eventUser
+			}
+	
+	public List<EventUser> findByUserId(Integer userId) throws DataNotFoundException{
+		List<EventUser> eventuser  = this.repository.findByUserId(userId);
+		if (eventuser == null) {
+			throw new DataNotFoundException();
+		}
+		return eventuser; //eventUsers -> eventUser
+	}
+	
+	public EventUser findByEventIdAndUserId(Integer eventId, Integer userId) throws DataNotFoundException {
+		EventUser eventuser = this.repository.findByEventIdAndUserId(eventId, userId);
+		if (eventuser == null) {
+			throw new DataNotFoundException();
+		}
+		return eventuser; //eventUsers -> eventUser
+	}
+	
+	
 }

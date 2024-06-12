@@ -20,7 +20,7 @@
 	           </tr>
 	         </thead>
 	         <tbody>
-	          <tr th:each="event: ${events}" th:object="${event}">
+	          <tr th:object="${event}">
 	             <td th:text="*{id}"></td>
 		         <td th:text="*{name}"></td>
 		  		 <td th:text="*{maxParticipant}"></td>
@@ -28,16 +28,16 @@
 		  		 <td th:text="*{user.email}"></td>
 	             <td th:text="*{#dates.format(createdAt, 'yyyy年MM月dd日HH時mm分ss秒')}"></td>
 	             <td th:text="*{#dates.format(modifiedAt, 'yyyy年MM月dd日HH時mm分ss秒')}"></td>
-	             </td>
+	       
 	           </tr>
 	         </tbody>
 	   	</table>
-	  <div class = "participant-count">
-		現在参加者数: <span th:text= "*{id} "+'名'""></span>
+	  	<div class = "participant-count">
+			現在参加者数: <span th:text= "${event.eventUsers.size()} +'名' "></span>
 		</div>
-	  <div class="login-b">
-		<a th:href="@{/users/login}"  class="btn btn-primary">ログイン</a>
-	  </div>  
-	  
+		<div class="login-b">
+			<a th:href="@{/users/login}"  class="btn btn-primary">ログイン</a>
+		</div> 
+	</div>
   </body>
 </html>

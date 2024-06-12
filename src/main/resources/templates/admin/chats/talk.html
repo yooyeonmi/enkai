@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+  <head>
+    <meta charset="UTF-8" th:remove="tag">
+	<link rel="stylesheet" type = "text/css" th:href="@{css/style.css}">
+  </head>
+  <body><div layout:fragment="content">
+	<form th:action ="@{/admin/chats/talk/{id}(id=*{id})}" th:object="${chat}" method="post">
+	 <h1 class="page-header"  th:text = ${event.name}>イベント名</h1>
+	 <div class="form-group" th:classappend="${#fields.hasErrors('body')} ? error">
+       <label for="chat.body">Body</label>
+	  
+     </div>
+	 <div>
+		<a th:href="@{/admin/chats/talk/{id}(id=*{id})}" class="btn btn-primary">登録</a>
+   	</div>
+		<div th:each = "chat:${chats}" th:object="${event}">
+			<div class="chat_messege">
+			 <ul th:each="chats: ${chat}" th:object="${chat}">
+				<li th:text="*{user.email}"></li>
+	            <li th:text="*{body}"></lu>
+	            <li th:text="*{#dates.format(createdAt, 'yyyy年MM月dd日HH時mm分ss秒')}"></li>
+	  	  	  </ul>
+			</div>
+		</div>
+	  </form> 
+    </div>
+  </body>
+</html>	

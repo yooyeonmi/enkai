@@ -39,4 +39,12 @@ public class ChatDao implements BaseDao<Chat> {
 			System.out.println("no data");
 		}
 	}
+	
+	public Chat findByEventIdAndUserId(Integer eventId, Integer userId) throws DataNotFoundException {
+		Chat chat = this.repository.findByEventIdAndUserId(eventId, userId);
+		if (chat == null) {
+			throw new DataNotFoundException();
+		}
+		return chat; //eventUsers -> eventUser
+	}
 }

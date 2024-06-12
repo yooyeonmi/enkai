@@ -3,6 +3,8 @@ package com.example.demo.web.admin;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,70 +14,74 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.common.DataNotFoundException;
 import com.example.demo.common.FlashData;
 import com.example.demo.entity.Event;
-import com.example.demo.service.BaseService;
+import com.example.demo.entity.EventUser;
+import com.example.demo.entity.User;
+import com.example.demo.service.EventService;
 import com.example.demo.service.EventUserService;
+import com.example.demo.service.UserService;
 
 import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping({"/admin/events"})
 public class AdminEventsController {
-	@Autowired
-	BaseService<Event> eventService;
+	/*@Autowired
+	BaseService<Event> eventService;*/
 	@Autowired
 	EventUserService eventUserService;
+	@Autowired
+	UserService userService;
+	@Autowired
+	EventService eventService;
 	
-	 
-	 /*
-	  *   イベント一覧表示
-	  */
-	@GetMapping(path = {"/",""})
-	public String list(Model model) {
-		//	全件取得
-			List<Event> events = eventService.findAll();
-			model.addAttribute("events",events);
-			return "/admin/events/list";
-	}//admin
-	
-	private boolean isParticipating = false;
-	
-	//@PostMapping(value = )
 	
 	/*
-	 *   イベント詳細
+	 * イベント表示詳細
 	 */
-	 
-	@GetMapping(value = {"/view/{id}"})
-	public String view(Model model) {
-		// 全件取得
-		List<Event> events = eventService.findAll();
-		model.addAttribute("events", events);
-		return "/admin/events/view";
-	}
-
-	/*	@GetMapping(value = {"view/{id}"})
-		public String viewEvent(@PathVariable int id, Model model, Principal principal) {
-			Event evnet = eventService.findById(id);
-			User user = userService.findByEmail(principal.getName());
-			boolean isParticipant = eventService.isParticipant("event", event);
-			model.addAttribute("isParticipant",isParticipant);
-			return "/admin/event/view";
-		}*/
+	@GetMapping(value = "/view/{id}")
+		public String view(@PathVariable Integer id, @AuthenticationPrincipal UserDetails user, Model model, RedirectAttributes ra) {
+			// 全件取得
+			String UserEmail = user.getUsername();
+			try {
+				User userData = userService.findByEmail(UserEmail);
+				Event event = eventService.findById(id);
+				EventUser eventUser = eventUserService.findByEventIdAndUserId(event.getId(),userData.getId());
+				model.addAttribute("eventUser",eventUser); //view に送る			
+				model.addAttribute("event",event); 
+			} catch (Exception e) {
+				FlashData flash = new FlashData().danger("該当データがありません");
+				ra.addFlashAttribute("flash", flash);
+				/*return "redirect:/admin/events";*/
+			}
+			
+			return "/admin/events/view";
+		} 
 	
 	/*
 	 * マイイベント表示
 	 */
 	
 	@GetMapping(value = "/mylist")
-	public String mylist(Model model) {
+	public String mylist(Model model, @AuthenticationPrincipal UserDetails user,RedirectAttributes ra) {
+		FlashData flash;
 		//	全件取得
-			List<Event> events = eventService.findAll();
-			model.addAttribute("events",events);
+			String UserEmail = user.getUsername();
+			try {
+				User userData = userService.findByEmail(UserEmail); 
+				List<Event> event = eventService.findByUserId(userData.getId()); 
+				model.addAttribute("event",event); //view に送る
+				
+			} catch(DataNotFoundException e) {
+	    		flash = new FlashData().danger("該当データがありません");
+	    		ra.addFlashAttribute("flash", flash);
+			}
+			
+			
 			return "/admin/events/mylist";
 	}
-
 	
 	/*
 	 * 新規作成画面表示
@@ -89,7 +95,7 @@ public class AdminEventsController {
 	/*
 	 * 新規登録
 	 */
-	@PostMapping(value = "/create")
+	@PostMapping(value = "/create{id}")
 	public String register(@Valid Event event, BindingResult result, Model model, RedirectAttributes ra) {
 		FlashData flash;
 		try {
@@ -113,8 +119,8 @@ public class AdminEventsController {
 	public String edit(@PathVariable Integer id, Model model, RedirectAttributes ra) {
 		try {
 			// 存在確認
-			Event events = eventService.findById(id);
-			model.addAttribute("events",events);
+			Event event = eventService.findById(id);
+			model.addAttribute("event",event);
 		} catch (Exception e) {
 			FlashData flash = new FlashData().danger("該当データがありません");
 			ra.addFlashAttribute("flash", flash);
@@ -146,15 +152,17 @@ public class AdminEventsController {
 		return "redirect:/admin/events/mylist";
 	}
 	
+	
+	
 	/*
 	 * 削除
 	 */
-	/*@GetMapping("/delete/{id}")
+	@GetMapping("/delete/{id}")
 		public String delete(@PathVariable Integer id, Event event, RedirectAttributes ra) {
 			FlashData flash;
 			try {
-				List<Event> event = eventUserService.findByEventId(id);
-	    		if (eventUsers.isEmpty()) {
+				List<EventUser> eventUser = eventUserService.findByEventId(event.getId());
+	    		if (eventUser.isEmpty()) {
 	        			eventService.findById(id);
 	        			eventService.deleteById(id);
 	        			flash = new FlashData().success("イベントの削除が完了しました");
@@ -169,6 +177,6 @@ public class AdminEventsController {
 				flash = new FlashData().danger("処理中にエラーが発生しました");
 				}
 			ra.addFlashAttribute("flash",flash);
-			return "redirect:/admin/events";
-		}*/
+			return "redirect:/admin/events/mylist";
+		}
 }

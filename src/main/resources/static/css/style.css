@@ -2,8 +2,8 @@
 
 .participant-count{
 	background-color: rgb(170, 215, 255);
-	height: 50px;
-	font-size: x-large;
+	height: 45px;
+	font-size: larger;
 	color: rgb(128, 128, 192);
 	font-weight: bold;
 	text-align: center;
@@ -21,3 +21,8 @@
 	display: flex;
 	justify-content: center;
 }
+
+.btn{
+	margin: 5px;
+}
+
