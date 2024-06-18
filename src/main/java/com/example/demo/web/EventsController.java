@@ -31,7 +31,7 @@ public class EventsController {
 				List<Event> event = eventService.findAll();
 				model.addAttribute("event",event);
 				return "/events/list";
-		}//admin
+		}
 	
 	/*
 	 * イベント詳細

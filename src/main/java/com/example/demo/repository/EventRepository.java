@@ -10,9 +10,4 @@ public interface EventRepository extends JpaRepository<Event, Integer>{
 		List<Event> findByCategoryId(int categoryId);
 		List<Event> findByUserId(int id);
 		List<Event> findByIdAndUserId(int id, int userId);
-		/*	public Event findByMax(int maxParticipant);*/
-		
-		/*		List<Event> findByEventId(int eventId);*/
-		
-
 }

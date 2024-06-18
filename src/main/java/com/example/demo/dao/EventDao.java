@@ -41,14 +41,6 @@ public class EventDao implements BaseDao<Event> {
 		}
 	}
 	
-	/*	public Event findByMax(Integer maxParticipant) throws DataNotFoundException {
-			Event event = this.repository.findByMax(maxParticipant);
-			if (event == null) {
-				throw new DataNotFoundException();
-			}
-			return event; //
-		}*/
-	
 	public List<Event> findByCategoryId(Integer categoryId) throws DataNotFoundException{
 		List<Event> events  = this.repository.findByCategoryId(categoryId);
 		if (events == null) {
@@ -63,6 +55,7 @@ public class EventDao implements BaseDao<Event> {
 		}
 		return events;
 	}
+	
 	/*public Event findByUserId(Integer eventId, Integer userId) throws DataNotFoundException{
 		EventUser eventuser = this.repository.findByUserId(eventId, userId);
 		if (eventuser == null) {

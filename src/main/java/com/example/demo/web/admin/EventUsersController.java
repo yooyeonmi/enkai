@@ -22,6 +22,8 @@ import com.example.demo.service.EventService;
 import com.example.demo.service.EventUserService;
 import com.example.demo.service.UserService;
 
+import jakarta.validation.Valid;
+
 @Controller
 @RequestMapping({ "/admin/eventusers" })
 public class EventUsersController {
@@ -35,61 +37,36 @@ public class EventUsersController {
 	/*
 	 * イベントユーザ新規登録
 	 */
-	/*	@GetMapping(value = "/create/{eventId}")
-		public String register(@PathVariable Integer eventId, Integer maxParticipant, @Valid EventUser eventUser,
+	@GetMapping(value = "/create/{eventId}")
+		public String register(@PathVariable Integer eventId, @Valid EventUser eventUser,
 				BindingResult result,@AuthenticationPrincipal UserDetails user, Model model,
 				RedirectAttributes ra) {
 			// 全件取得
-			String UserEmail = user.getUsername();
+			
 			try {
+				String UserEmail = user.getUsername();
 				User userData = userService.findByEmail(UserEmail);
-				//EventUser eventUser = eventUserService.findByEventIdAndUserId(eventId,userData.getId());
-				//List<Event> event = eventService.findByUserId(userData.getId());
-				eventUser.setEvent(eventService.findById(eventId));
-				eventUser.setUser(userService.findById(userData.getId()));
-				//MaxParticipant <= evevtUser.size()
-						if (eventUser.size() < event.getMaxParticipant()) {
-				eventUserService.save(eventUser);
-				model.addAttribute("eventUser", eventUser);
-				
-				}else {
-					return "redirect:/admin/events";
-				}
+				Event event = eventService.findById(eventId);
+				Integer MaxParticipant = event.getMaxParticipant();
+				List<EventUser> eventP = eventUserService.findByEventId(eventId);
+				if (eventP.size() < MaxParticipant) {
+					eventUser.setEvent(eventService.findById(eventId));
+					eventUser.setUser(userService.findById(userData.getId()));
+					eventUserService.save(eventUser);
+					model.addAttribute("eventUser", eventUser);
+				} else {
+					FlashData flash = new FlashData().danger("イベント参加者数が最大数です");
+					ra.addFlashAttribute("flash", flash);
+					return "redirect:/admin/events/view/{eventId}";
+					}
 			} catch (Exception e) {
 				FlashData flash = new FlashData().danger("該当データがありません");
 				ra.addFlashAttribute("flash", flash);
 				return "redirect:/admin/events";
 			}
 			return "redirect:/admin/events/view/{eventId}";
-		}*/
-
-	@GetMapping(value = "/create/{eventId}")
-	public String register(@PathVariable Integer eventId, Integer maxParticipant, 
-			BindingResult result, @AuthenticationPrincipal UserDetails user, Model model,
-			RedirectAttributes ra) {
-		// 全件取得
-		try {
-			Event event = eventService.findById(eventId);
-			String UserEmail = user.getUsername();
-			Integer MaxParticipant = event.getMaxParticipant();
-			User userData = userService.findByEmail(UserEmail);
-			EventUser eventUser = eventUserService.findByEventIdAndUserId(eventId, userData.getId());
-			List<EventUser> eventP = eventUserService.findByEventId(eventId);
-			if (eventP.size() >= MaxParticipant) {
-				eventUser.setEvent(eventService.findById(eventId));
-				eventUser.setUser(userService.findById(userData.getId()));
-				eventUserService.save(eventUser);
-				model.addAttribute("eventUser", eventUser);
-			} else {
-				return "redirect:/admin/events/view/{eventId}";
-			}
-		} catch (Exception e) {
-			FlashData flash = new FlashData().danger("該当データがありません");
-			ra.addFlashAttribute("flash", flash);
-			return "redirect:/admin/events";
 		}
-		return "redirect:/admin/events/view/{eventId}";
-	}
+
 
 	/*
 	 * 削除

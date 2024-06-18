@@ -27,13 +27,14 @@ public class SecurityConfig {
 			http.authorizeHttpRequests(authorize ->
 				authorize
 					.requestMatchers("/webjars/**", "/css/**", "/js/**").permitAll()
-					.requestMatchers("/enkai/","/enkai/events/view/*", "/admin/events/view/*", "/users/login", "/admin/users/logout", "/users/create", "/error").permitAll() 
-			)
+					.requestMatchers("/enkai/","/enkai/events/view/*", "/admin/events/view/*", "/users/login", "/admin/users/logout", "/users/create", "/error").permitAll()
+					.anyRequest().authenticated()
+					)
 			.formLogin(form ->
 				form
 						.loginProcessingUrl("/users/login")
 						.loginPage("/users/login")
-						.defaultSuccessUrl("/admin") // 
+						.defaultSuccessUrl("/admin") 
 						.failureUrl("/users/login?error")
 				)
 				.logout(logout ->
